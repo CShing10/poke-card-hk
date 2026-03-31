@@ -22,13 +22,14 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCard, setSelectedCard] = useState<PokemonCard | null>(null);
   const [exchangeRate, setExchangeRate] = useState<number>(7.8);
-  const [rateLoading, setRateLoading] = useState(true);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
   const [sortOption, setSortOption] = useState<'default' | 'price-low' | 'price-high'>('default');
   const [selectedSet, setSelectedSet] = useState<string>('全部');
+  const [cards, setCards] = useState<PokemonCard[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // 載入收藏
+  // 載入收藏 & 即時匯率
   useEffect(() => {
     const saved = localStorage.getItem('pokemonFavorites');
     if (saved) setFavorites(JSON.parse(saved));
@@ -38,7 +39,6 @@ export default function Home() {
     localStorage.setItem('pokemonFavorites', JSON.stringify(favorites));
   }, [favorites]);
 
-  // 即時匯率
   useEffect(() => {
     const fetchExchangeRate = async () => {
       try {
@@ -46,68 +46,47 @@ export default function Home() {
         setExchangeRate(res.data.rates.HKD);
       } catch {
         setExchangeRate(7.8);
-      } finally {
-        setRateLoading(false);
       }
     };
     fetchExchangeRate();
   }, []);
 
-  const cards: PokemonCard[] = [
-    {
-      id: "swsh1-1",
-      nameZh: "皮卡丘 V",
-      nameEn: "Pikachu V",
-      nameJp: "ピカチュウV",
-      set: { name: "Sword & Shield" },
-      number: "1",
-      rarity: "Rare Holo V",
-      images: { large: "https://images.pokemontcg.io/swsh1/1_hires.png" },
-      usdPrice: 12.5,
-      priceHistory: [{ date: '3/1', usd: 9.8 }, { date: '3/8', usd: 10.5 }, { date: '3/15', usd: 11.2 }, { date: '3/22', usd: 12.5 }, { date: '3/29', usd: 13.8 }]
-    },
-    {
-      id: "sv1-25",
-      nameZh: "噴火龍 ex",
-      nameEn: "Charizard ex",
-      nameJp: "リザードンex",
-      set: { name: "Scarlet & Violet" },
-      number: "25",
-      rarity: "Double Rare",
-      images: { large: "https://images.pokemontcg.io/sv1/25_hires.png" },
-      usdPrice: 45.0,
-      priceHistory: [{ date: '3/1', usd: 38 }, { date: '3/8', usd: 42 }, { date: '3/15', usd: 48 }, { date: '3/22', usd: 45 }, { date: '3/29', usd: 47 }]
-    },
-    {
-      id: "swsh35-1",
-      nameZh: "皮卡丘",
-      nameEn: "Pikachu",
-      nameJp: "ピカチュウ",
-      set: { name: "Celebrations" },
-      number: "1",
-      rarity: "Common",
-      images: { large: "https://images.pokemontcg.io/swsh35/1_hires.png" },
-      usdPrice: 5.8,
-      priceHistory: [{ date: '3/1', usd: 4.5 }, { date: '3/8', usd: 5.2 }, { date: '3/15', usd: 6.1 }, { date: '3/22', usd: 5.8 }, { date: '3/29', usd: 6.5 }]
-    },
-    {
-      id: "sv3-6",
-      nameZh: "夢幻 ex",
-      nameEn: "Mew ex",
-      nameJp: "ミュウex",
-      set: { name: "Scarlet & Violet" },
-      number: "6",
-      rarity: "Double Rare",
-      images: { large: "https://images.pokemontcg.io/sv3/6_hires.png" },
-      usdPrice: 28.5,
-      priceHistory: [{ date: '3/1', usd: 25 }, { date: '3/15', usd: 30 }, { date: '3/29', usd: 28.5 }]
-    }
-  ];
+  // 從真實 Pokémon TCG API 載入卡片
+  useEffect(() => {
+    const fetchCards = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('https://api.pokemontcg.io/v2/cards?pageSize=80&orderBy=set.releaseDate');
+        const data = await response.json();
 
-  const allSets = useMemo(() => {
-    const sets = Array.from(new Set(cards.map(card => card.set.name)));
-    return ['全部', ...sets.sort().reverse()];
+        const formattedCards = data.data.map((card: any) => ({
+          id: card.id,
+          nameZh: card.name,
+          nameEn: card.name,
+          set: { name: card.set.name },
+          number: card.number,
+          rarity: card.rarity || 'Common',
+          images: { large: card.images.large },
+          usdPrice: Math.floor(Math.random() * 80) + 5, // 暫時模擬價格
+          priceHistory: [
+            { date: '3/1', usd: 10 },
+            { date: '3/15', usd: 15 },
+            { date: '3/29', usd: 12 }
+          ]
+        }));
+
+        setCards(formattedCards);
+      } catch (error) {
+        console.error('載入卡片失敗:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCards();
   }, []);
+
+  const allSets = useMemo(() => ['全部', ...Array.from(new Set(cards.map(c => c.set.name))).sort().reverse()], [cards]);
 
   const displayedCards = useMemo(() => {
     let result = [...cards];
@@ -116,8 +95,7 @@ export default function Home() {
       const term = searchTerm.toLowerCase().trim();
       result = result.filter(card =>
         card.nameZh.toLowerCase().includes(term) ||
-        card.nameEn.toLowerCase().includes(term) ||
-        (card.nameJp && card.nameJp.toLowerCase().includes(term))
+        card.nameEn.toLowerCase().includes(term)
       );
     }
 
@@ -125,11 +103,8 @@ export default function Home() {
       result = result.filter(card => card.set.name === selectedSet);
     }
 
-    if (sortOption === 'price-low') {
-      result.sort((a, b) => a.usdPrice - b.usdPrice);
-    } else if (sortOption === 'price-high') {
-      result.sort((a, b) => b.usdPrice - a.usdPrice);
-    }
+    if (sortOption === 'price-low') result.sort((a, b) => a.usdPrice - b.usdPrice);
+    if (sortOption === 'price-high') result.sort((a, b) => b.usdPrice - a.usdPrice);
 
     if (showFavorites) {
       result = result.filter(card => favorites.includes(card.id));
@@ -137,6 +112,19 @@ export default function Home() {
 
     return result;
   }, [cards, searchTerm, selectedSet, sortOption, showFavorites, favorites]);
+
+  const groupedCards = useMemo(() => {
+    const groups: { [set: string]: { [rarity: string]: PokemonCard[] } } = {};
+
+    displayedCards.forEach(card => {
+      const setName = card.set.name;
+      if (!groups[setName]) groups[setName] = {};
+      if (!groups[setName][card.rarity]) groups[setName][card.rarity] = [];
+      groups[setName][card.rarity].push(card);
+    });
+
+    return groups;
+  }, [displayedCards]);
 
   const toggleFavorite = (cardId: string) => {
     if (favorites.includes(cardId)) {
@@ -150,195 +138,210 @@ export default function Home() {
 
   const openDetail = (card: PokemonCard) => setSelectedCard(card);
 
-  const exitFavorites = () => {
+  const closeDetail = () => setSelectedCard(null);
+
+  const goToHome = () => {
+    setSelectedSet('全部');
     setShowFavorites(false);
     setSearchTerm('');
   };
 
+  if (loading) {
+    return <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-xl">正在從 Pokémon TCG API 載入最新卡片資料...</div>;
+  }
+
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
-      {/* Header */}
-      <header className="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="text-3xl">⚡</div>
-            <div>
-              <h1 className="text-2xl font-bold">卡價通</h1>
-              <p className="text-zinc-400 text-xs">香港 Pokémon 卡片價格參考</p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => {
-              setShowFavorites(!showFavorites);
-              if (!showFavorites) setSearchTerm('');
-            }}
-            className={`flex items-center gap-2 px-4 py-2 rounded-2xl font-medium text-sm transition-all ${
-              showFavorites ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'
-            }`}
-          >
-            ❤️ 我的收藏 ({favorites.length})
-          </button>
-        </div>
-      </header>
-
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* 系列選擇 - 手機友好版 */}
-        {!showFavorites && (
-          <div className="mb-8">
-            <select
-              value={selectedSet}
-              onChange={(e) => setSelectedSet(e.target.value)}
-              className="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-3.5 text-base focus:outline-none focus:border-emerald-500"
+    <div className="min-h-screen bg-zinc-950 text-white flex">
+      {/* 左側系列欄 */}
+      <div className="w-64 bg-zinc-900 border-r border-zinc-800 p-6 hidden md:block overflow-y-auto">
+        <h3 className="text-lg font-semibold mb-6 text-emerald-400">選擇系列</h3>
+        <div className="space-y-1">
+          {allSets.map((setName) => (
+            <button
+              key={setName}
+              onClick={() => setSelectedSet(setName)}
+              className={`w-full text-left px-4 py-3 rounded-2xl text-sm transition-all ${
+                selectedSet === setName ? 'bg-emerald-600 text-white' : 'hover:bg-zinc-800 text-zinc-300'
+              }`}
             >
-              {allSets.map((setName) => (
-                <option key={setName} value={setName}>
-                  {setName}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* 搜尋框 + 排序 */}
-        {!showFavorites && (
-          <div className="mb-10">
-            <div className="relative mb-6">
-              <input
-                type="text"
-                placeholder="搜尋卡名（支援中文、英文、日文）"
-                className="w-full bg-zinc-900 border border-zinc-700 focus:border-emerald-500 rounded-3xl px-5 py-4 text-base placeholder-zinc-500 focus:outline-none"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <div className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-500">🔍</div>
-            </div>
-
-            <div className="flex flex-wrap gap-2 justify-center">
-              <button onClick={() => setSortOption('default')} className={`px-5 py-2 rounded-full text-sm transition-all ${sortOption === 'default' ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'}`}>
-                預設
-              </button>
-              <button onClick={() => setSortOption('price-low')} className={`px-5 py-2 rounded-full text-sm transition-all ${sortOption === 'price-low' ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'}`}>
-                低 → 高
-              </button>
-              <button onClick={() => setSortOption('price-high')} className={`px-5 py-2 rounded-full text-sm transition-all ${sortOption === 'price-high' ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'}`}>
-                高 → 低
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* 返回按鈕 */}
-        {showFavorites && (
-          <div className="mb-8 flex items-center gap-3">
-            <button onClick={exitFavorites} className="text-emerald-400 hover:text-emerald-300 font-medium">
-              ← 返回全部
+              {setName}
             </button>
-            <h2 className="text-xl font-semibold">我的收藏</h2>
-          </div>
-        )}
-
-        {/* 卡片列表 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayedCards.length > 0 ? (
-            displayedCards.map((card) => {
-              const hkdPrice = calculateHKD(card.usdPrice);
-              const isFavorite = favorites.includes(card.id);
-
-              return (
-                <div 
-                  key={card.id} 
-                  className="bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800 hover:border-emerald-500/60 transition-all group relative"
-                >
-                  <button
-                    onClick={(e) => { e.stopPropagation(); toggleFavorite(card.id); }}
-                    className="absolute top-4 right-4 z-10 text-3xl transition-all hover:scale-125 active:scale-90"
-                  >
-                    {isFavorite ? '❤️' : '♡'}
-                  </button>
-
-                  <div 
-                    className="relative h-[360px] bg-zinc-950 flex items-center justify-center p-8 border-b border-zinc-800 cursor-pointer"
-                    onClick={() => openDetail(card)}
-                  >
-                    <Image
-                      src={card.images.large}
-                      alt={card.nameZh}
-                      width={280}
-                      height={400}
-                      className="object-contain transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-
-                  <div className="p-6" onClick={() => openDetail(card)}>
-                    <div className="font-bold text-xl mb-1">{card.nameZh}</div>
-                    <div className="text-zinc-400 text-sm mb-5">
-                      {card.set.name} ・ No.{card.number}
-                    </div>
-
-                    <div className="flex justify-between items-end">
-                      <div>
-                        <div className="text-xs text-zinc-500">TCGPlayer</div>
-                        <div className="text-2xl font-bold text-emerald-400">${card.usdPrice}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-xs text-zinc-500">香港參考價</div>
-                        <div className="text-2xl font-bold text-white">HK${hkdPrice}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="col-span-full text-center py-16 text-zinc-400">
-              {showFavorites ? '你還沒有收藏任何卡片' : '目前沒有卡片'}
-            </div>
-          )}
+          ))}
         </div>
       </div>
 
-      {/* 彈出視窗 */}
+      {/* 主要內容 */}
+      <div className="flex-1">
+        <header className="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-50">
+          <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="text-3xl">⚡</div>
+              <div>
+                <h1 className="text-2xl font-bold">卡價通</h1>
+                <p className="text-zinc-400 text-xs">香港 Pokémon 卡片價格參考</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <button onClick={goToHome} className="text-emerald-400 hover:text-emerald-300 text-sm font-medium">
+                首頁
+              </button>
+              <button
+                onClick={() => setShowFavorites(!showFavorites)}
+                className={`px-4 py-2 rounded-2xl text-sm font-medium transition-all ${showFavorites ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'}`}
+              >
+                ❤️ 我的收藏 ({favorites.length})
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          {/* 手機版系列選擇 */}
+          <div className="md:hidden mb-8">
+            <select
+              value={selectedSet}
+              onChange={(e) => setSelectedSet(e.target.value)}
+              className="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-3.5 text-base"
+            >
+              {allSets.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+
+          {/* 搜尋 + 排序 */}
+          {!showFavorites && (
+            <div className="mb-10">
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  placeholder="搜尋卡名..."
+                  className="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-base placeholder-zinc-500 focus:border-emerald-500"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {['default', 'price-low', 'price-high'].map(opt => (
+                  <button
+                    key={opt}
+                    onClick={() => setSortOption(opt as any)}
+                    className={`px-5 py-2 rounded-full text-sm ${sortOption === opt ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'}`}
+                  >
+                    {opt === 'default' ? '預設' : opt === 'price-low' ? '低→高' : '高→低'}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 卡片列表 */}
+          <div className="space-y-16">
+            {Object.entries(groupedCards).map(([setName, rarityGroups]) => (
+              <div key={setName}>
+                <h2 className="text-2xl font-bold mb-8 text-emerald-400">{setName}</h2>
+
+                {Object.entries(rarityGroups).map(([rarity, cardsInGroup]) => (
+                  <div key={rarity} className="mb-12">
+                    <h3 className="text-lg font-semibold mb-6 text-white flex items-center gap-3">
+                      {rarity} <span className="text-zinc-500 text-sm">({cardsInGroup.length})</span>
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+                      {cardsInGroup.map(card => {
+                        const hkdPrice = calculateHKD(card.usdPrice);
+                        const isFavorite = favorites.includes(card.id);
+
+                        return (
+                          <div 
+                            key={card.id}
+                            className="bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 group relative cursor-pointer transition-all hover:-translate-y-1 hover:shadow-2xl hover:border-emerald-500/60"
+                            onClick={() => openDetail(card)}
+                          >
+                            <button
+                              onClick={(e) => { e.stopPropagation(); toggleFavorite(card.id); }}
+                              className="absolute top-3 right-3 z-10 text-2xl"
+                            >
+                              {isFavorite ? '❤️' : '♡'}
+                            </button>
+
+                            <div className="h-52 bg-zinc-950 flex items-center justify-center p-4 overflow-hidden">
+                              <Image
+                                src={card.images.large}
+                                alt={card.nameZh}
+                                width={180}
+                                height={250}
+                                className="object-contain transition-transform duration-300 group-hover:scale-110"
+                              />
+                            </div>
+
+                            <div className="p-5 pt-7">
+                              <div className="font-medium text-base leading-tight mb-4 line-clamp-2 min-h-[3.5em]">
+                                {card.nameZh}
+                              </div>
+                              <div className="text-xs text-zinc-400 mb-4">No.{card.number}</div>
+
+                              <div className="flex justify-between text-sm">
+                                <div className="text-emerald-400 font-bold">${card.usdPrice.toFixed(2)}</div>
+                                <div className="font-bold">HK${hkdPrice}</div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 彈出詳細視窗 */}
       {selectedCard && (
-        <div className="fixed inset-0 bg-black/95 flex items-center justify-center z-[60] p-4">
-          <div className="bg-zinc-900 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-auto border border-zinc-700">
+        <div 
+          className="fixed inset-0 bg-black/95 flex items-center justify-center z-[60] p-4"
+          onClick={closeDetail}
+        >
+          <div 
+            className="bg-zinc-900 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-auto border border-zinc-700"
+            onClick={e => e.stopPropagation()}
+          >
             <div className="p-6">
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h2 className="text-3xl font-bold">{selectedCard.nameZh}</h2>
                   <p className="text-zinc-400">{selectedCard.nameEn}</p>
                 </div>
-                <button onClick={() => setSelectedCard(null)} className="text-4xl text-zinc-500 hover:text-white">×</button>
+                <button onClick={closeDetail} className="text-4xl text-zinc-500 hover:text-white">×</button>
               </div>
 
-              <Image
-                src={selectedCard.images.large}
-                alt={selectedCard.nameZh}
-                width={400}
-                height={560}
-                className="rounded-2xl shadow-xl mx-auto mb-8"
+              <Image 
+                src={selectedCard.images.large} 
+                alt={selectedCard.nameZh} 
+                width={400} 
+                height={560} 
+                className="rounded-2xl mx-auto mb-8" 
               />
 
-              <div className="space-y-8">
-                <div>
-                  <div className="text-emerald-400 text-sm">TCGPlayer 市價</div>
-                  <div className="text-5xl font-bold text-emerald-400 mt-1">${selectedCard.usdPrice}</div>
-                  <div className="text-4xl font-bold text-white mt-2">HK${calculateHKD(selectedCard.usdPrice)}</div>
-                </div>
+              <div className="mb-8">
+                <div className="text-emerald-400 text-sm">TCGPlayer 市價</div>
+                <div className="text-5xl font-bold text-emerald-400">${selectedCard.usdPrice.toFixed(2)}</div>
+                <div className="text-4xl font-bold text-white mt-2">HK${calculateHKD(selectedCard.usdPrice)}</div>
+              </div>
 
-                <div>
-                  <h3 className="font-semibold mb-4">近期價格走勢</h3>
-                  <div className="h-64 bg-zinc-950 rounded-2xl p-4">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={selectedCard.priceHistory}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-                        <XAxis dataKey="date" stroke="#52525b" />
-                        <YAxis stroke="#52525b" />
-                        <Tooltip />
-                        <Line type="monotone" dataKey="usd" stroke="#34d399" strokeWidth={3} dot={{ fill: '#34d399', r: 5 }} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
+              <div>
+                <h3 className="font-semibold mb-4">近期價格走勢 (USD)</h3>
+                <div className="h-64 bg-zinc-950 rounded-2xl p-4">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={selectedCard.priceHistory}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                      <XAxis dataKey="date" stroke="#52525b" />
+                      <YAxis stroke="#52525b" />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="usd" stroke="#34d399" strokeWidth={3} dot={{ fill: '#34d399', r: 5 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             </div>
