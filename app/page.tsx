@@ -72,17 +72,17 @@ export default function Home() {
 
         // 手動加入忍者飛旋穩定卡片
         const ninjaCards = [
-          {
-            id: "m4f-greninja-mur",
-            nameZh: "超級甲賀忍蛙 ex",
-            nameEn: "Mega Greninja ex",
-            set: { name: "忍者飛旋" },
-            number: "120/083",
-            rarity: "MUR",
-            images: { large: "https://images.pokemontcg.io/m4/1_hires.png" },
-            usdPrice: 254,
-            priceHistory: [{ date: '3/13', usd: 220 }, { date: '3/20', usd: 240 }, { date: '3/27', usd: 254 }]
-          },
+              {
+      id: "m4f-greninja-mur",
+      nameZh: "超級甲賀忍蛙 ex",
+      nameEn: "Mega Greninja ex",
+      set: { name: "忍者飛旋" },
+      number: "120/083",
+      rarity: "MUR",
+      images: { large: "https://i.ibb.co/4w0fNbqL/ebe5dcee60ab42f1eedf4391302cec70-1c718848-d146-4cec-9528-b8573b98f7a1.webp" },
+      usdPrice: 254,
+      priceHistory: [{ date: '3/13', usd: 220 }, { date: '3/20', usd: 240 }, { date: '3/27', usd: 254 }]
+    },
           {
             id: "m4f-greninja-sar",
             nameZh: "超級甲賀忍蛙 ex",
