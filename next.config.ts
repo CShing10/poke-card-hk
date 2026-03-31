@@ -6,10 +6,16 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'images.pokemontcg.io',
       },
+      {
+        protocol: 'https',
+        hostname: 'i.ibb.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
+      },
     ],
   },
-  // 允許從其他裝置訪問開發伺服器
-  allowedDevOrigins: ['192.168.50.216'],
 };
 
 export default nextConfig;

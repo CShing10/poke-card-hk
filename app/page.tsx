@@ -50,7 +50,7 @@ export default function Home() {
     fetchExchangeRate();
   }, []);
 
-  // 從真實 API 載入卡片 + 手動加入穩定忍者飛旋卡
+  // 真實 API 載入卡片（無超級甲賀忍蛙 ex 金卡）
   useEffect(() => {
     const fetchCards = async () => {
       try {
@@ -70,33 +70,7 @@ export default function Home() {
           priceHistory: [{ date: '3/1', usd: 15 }, { date: '3/15', usd: 22 }, { date: '3/29', usd: 18 }]
         }));
 
-        // 手動加入忍者飛旋穩定卡片
-        const ninjaCards = [
-              {
-      id: "m4f-greninja-mur",
-      nameZh: "超級甲賀忍蛙 ex",
-      nameEn: "Mega Greninja ex",
-      set: { name: "忍者飛旋" },
-      number: "120/083",
-      rarity: "MUR",
-      images: { large: "https://i.ibb.co/4w0fNbqL/ebe5dcee60ab42f1eedf4391302cec70-1c718848-d146-4cec-9528-b8573b98f7a1.webp" },
-      usdPrice: 254,
-      priceHistory: [{ date: '3/13', usd: 220 }, { date: '3/20', usd: 240 }, { date: '3/27', usd: 254 }]
-    },
-          {
-            id: "m4f-greninja-sar",
-            nameZh: "超級甲賀忍蛙 ex",
-            nameEn: "Mega Greninja ex",
-            set: { name: "忍者飛旋" },
-            number: "114/083",
-            rarity: "SAR",
-            images: { large: "https://images.pokemontcg.io/m4/2_hires.png" },
-            usdPrice: 190,
-            priceHistory: [{ date: '3/13', usd: 160 }, { date: '3/20', usd: 185 }, { date: '3/27', usd: 190 }]
-          }
-        ];
-
-        setCards([...ninjaCards, ...formatted]);
+        setCards(formatted);
       } catch (err) {
         console.error(err);
       } finally {
@@ -164,7 +138,7 @@ export default function Home() {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-2xl text-white">正在載入大量真實卡片資料...</div>;
+    return <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-2xl text-white">正在從 Pokémon TCG API 載入大量真實卡片資料...</div>;
   }
 
   return (
@@ -276,12 +250,13 @@ export default function Home() {
                               {isFavorite ? '❤️' : '♡'}
                             </button>
 
-                            <div className="h-52 bg-zinc-950 flex items-center justify-center p-4 overflow-hidden">
+                            {/* 修正後的圖片區域 */}
+                            <div className="h-52 bg-zinc-950 flex items-center justify-center p-4 overflow-hidden relative">
                               <Image
                                 src={card.images.large}
                                 alt={card.nameZh}
-                                width={180}
-                                height={250}
+                                fill
+                                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 180px"
                                 className="object-contain transition-transform duration-300 group-hover:scale-110"
                                 onError={(e) => {
                                   e.currentTarget.src = 'https://via.placeholder.com/180x250/1f2937/ffffff?text=無圖片';
@@ -331,16 +306,18 @@ export default function Home() {
                 <button onClick={closeDetail} className="text-4xl text-zinc-500 hover:text-white">×</button>
               </div>
 
-              <Image 
-                src={selectedCard.images.large} 
-                alt={selectedCard.nameZh} 
-                width={400} 
-                height={560} 
-                className="rounded-2xl mx-auto mb-8" 
-                onError={(e) => {
-                  e.currentTarget.src = 'https://via.placeholder.com/400x560/1f2937/ffffff?text=無圖片';
-                }}
-              />
+              <div className="relative h-[420px] bg-zinc-950 rounded-2xl mb-8 overflow-hidden">
+                <Image 
+                  src={selectedCard.images.large} 
+                  alt={selectedCard.nameZh} 
+                  fill
+                  sizes="(max-width: 768px) 90vw, 400px"
+                  className="object-contain"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://via.placeholder.com/400x560/1f2937/ffffff?text=無圖片';
+                  }}
+                />
+              </div>
 
               <div className="mb-8">
                 <div className="text-emerald-400 text-sm">TCGPlayer 市價</div>
