@@ -71,14 +71,16 @@ export default function Home() {
 
         // M4F 忍者飛旋 MUR + SAR + SR
         const m4fCards = [
-          {
+                    {
             id: "m4f-120-mur",
-            nameZh: "M4F 120/083 超級甲賀忍蛙ex MUR",
+            nameZh: "M4F 120/083 超級甲賀忍蛙 ex MUR",
             nameEn: "Mega Greninja ex",
             set: { name: "[M4F] 忍者飛旋" },
             number: "120/083",
             rarity: "MUR",
-            images: { large: "https://picsum.photos/id/1015/400/560" },
+            images: { 
+              large: "https://i.ibb.co/4w0fNbqL/ebe5dcee60ab42f1eedf4391302cec70-1c718848-d146-4cec-9528-b8573b98f7a1.webp" 
+            },
             usdPrice: 254,
             priceHistory: [{ date: '3/13', usd: 220 }, { date: '3/20', usd: 240 }, { date: '3/27', usd: 254 }]
           },
@@ -181,15 +183,15 @@ export default function Home() {
           { id: "m4f-ar-093", nameZh: "M4F 093/083 黏美兒 AR", nameEn: "Goomy AR", set: { name: "[M4F] 忍者飛旋" }, number: "093/083", rarity: "AR", images: { large: "https://picsum.photos/id/1015/400/560" }, usdPrice: 15, priceHistory: [{ date: '3/13', usd: 13 }, { date: '3/20', usd: 17 }, { date: '3/27', usd: 15 }] },
           { id: "m4f-ar-094", nameZh: "M4F 094/083 肯泰羅 AR", nameEn: "Tauros AR", set: { name: "[M4F] 忍者飛旋" }, number: "094/083", rarity: "AR", images: { large: "https://picsum.photos/id/1015/400/560" }, usdPrice: 15, priceHistory: [{ date: '3/13', usd: 13 }, { date: '3/20', usd: 17 }, { date: '3/27', usd: 15 }] },
           { id: "m4f-ar-095", nameZh: "M4F 095/083 步哨鼠 AR", nameEn: "Sentret AR", set: { name: "[M4F] 忍者飛旋" }, number: "095/083", rarity: "AR", images: { large: "https://picsum.photos/id/1015/400/560" }, usdPrice: 15, priceHistory: [{ date: '3/13', usd: 13 }, { date: '3/20', usd: 17 }, { date: '3/27', usd: 15 }] },
-       // RR（按你提供的正確名稱和 HKD 價格調整）
-          { id: "m4f-rr-003", nameZh: "M4F 003/083 大針蜂ex RR", nameEn: "Mega Beedrill ex", set: { name: "[M4F] 忍者飛旋" }, number: "003/083", rarity: "RR", images: { large: "https://picsum.photos/id/1015/400/560" }, usdPrice: 4, priceHistory: [{ date: '3/13', usd: 3.5 }, { date: '3/20', usd: 4.5 }, { date: '3/27', usd: 4 }] },
-          { id: "m4f-rr-015", nameZh: "M4F 015/083 超級火炎獅ex RR", nameEn: "Mega Pyroar ex", set: { name: "[M4F] 忍者飛旋" }, number: "015/083", rarity: "RR", images: { large: "https://picsum.photos/id/1015/400/560" }, usdPrice: 1.3, priceHistory: [{ date: '3/13', usd: 1 }, { date: '3/20', usd: 1.5 }, { date: '3/27', usd: 1.3 }] },
-          { id: "m4f-rr-022", nameZh: "M4F 022/083 超級甲賀忍蛙ex RR", nameEn: "Mega Greninja ex", set: { name: "[M4F] 忍者飛旋" }, number: "022/083", rarity: "RR", images: { large: "https://picsum.photos/id/1015/400/560" }, usdPrice: 6.4, priceHistory: [{ date: '3/13', usd: 5.5 }, { date: '3/20', usd: 7 }, { date: '3/27', usd: 6.4 }] },
-          { id: "m4f-rr-035", nameZh: "M4F 035/083 超級花葉蒂ex RR", nameEn: "Mega Floragato ex", set: { name: "[M4F] 忍者飛旋" }, number: "035/083", rarity: "RR", images: { large: "https://picsum.photos/id/1015/400/560" }, usdPrice: 1.3, priceHistory: [{ date: '3/13', usd: 1 }, { date: '3/20', usd: 1.5 }, { date: '3/27', usd: 1.3 }] },
-          { id: "m4f-rr-041", nameZh: "M4F 041/083 南瓜怪人ex RR", nameEn: "Gourgeist ex", set: { name: "[M4F] 忍者飛旋" }, number: "041/083", rarity: "RR", images: { large: "https://picsum.photos/id/1015/400/560" }, usdPrice: 1.3, priceHistory: [{ date: '3/13', usd: 1 }, { date: '3/20', usd: 1.5 }, { date: '3/27', usd: 1.3 }] },
-          { id: "m4f-rr-062", nameZh: "M4F 062/083 勾帕路翁ex RR", nameEn: "Cobalion ex", set: { name: "[M4F] 忍者飛旋" }, number: "062/083", rarity: "RR", images: { large: "https://picsum.photos/id/1015/400/560" }, usdPrice: 1.3, priceHistory: [{ date: '3/13', usd: 1 }, { date: '3/20', usd: 1.5 }, { date: '3/27', usd: 1.3 }] },
-          { id: "m4f-rr-063", nameZh: "M4F 063/083 超級毒藻龍ex RR", nameEn: "Mega Dragalge ex", set: { name: "[M4F] 忍者飛旋" }, number: "063/083", rarity: "RR", images: { large: "https://picsum.photos/id/1015/400/560" }, usdPrice: 1.3, priceHistory: [{ date: '3/13', usd: 1 }, { date: '3/20', usd: 1.5 }, { date: '3/27', usd: 1.3 }] },
-          { id: "m4f-rr-071", nameZh: "M4F 071/083 奇諾栗鼠ex RR", nameEn: "Mega Cinccino ex", set: { name: "[M4F] 忍者飛旋" }, number: "071/083", rarity: "RR", images: { large: "https://picsum.photos/id/1015/400/560" }, usdPrice: 4.5, priceHistory: [{ date: '3/13', usd: 4 }, { date: '3/20', usd: 5 }, { date: '3/27', usd: 4.5 }] },
+                 // RR（按你提供的正確名稱和 HKD 價格調整）
+          { id: "m4f-rr-003", nameZh: "M4F 003/083 大針蜂ex RR", nameEn: "Beedrill ex", set: { name: "[M4F] 忍者飛旋" }, number: "003/083", rarity: "RR", images: { large: "https://i.ibb.co/GfmZ20n9/tw00018423.png" }, usdPrice: 4, priceHistory: [{ date: '3/13', usd: 3.5 }, { date: '3/20', usd: 4.5 }, { date: '3/27', usd: 4 }] },
+          { id: "m4f-rr-015", nameZh: "M4F 015/083 超級火炎獅ex RR", nameEn: "Mega Pyroar ex", set: { name: "[M4F] 忍者飛旋" }, number: "015/083", rarity: "RR", images: { large: "https://i.ibb.co/849F1MyY/tw00018435.png" }, usdPrice: 1.3, priceHistory: [{ date: '3/13', usd: 1 }, { date: '3/20', usd: 1.5 }, { date: '3/27', usd: 1.3 }] },
+          { id: "m4f-rr-022", nameZh: "M4F 022/083 超級甲賀忍蛙ex RR", nameEn: "Mega Greninja ex", set: { name: "[M4F] 忍者飛旋" }, number: "022/083", rarity: "RR", images: { large: "https://i.ibb.co/nN91Z8zn/tw00018442.png" }, usdPrice: 6.4, priceHistory: [{ date: '3/13', usd: 5.5 }, { date: '3/20', usd: 7 }, { date: '3/27', usd: 6.4 }] },
+          { id: "m4f-rr-035", nameZh: "M4F 035/083 超級花葉蒂ex RR", nameEn: "Mega Floragato ex", set: { name: "[M4F] 忍者飛旋" }, number: "035/083", rarity: "RR", images: { large: "https://i.ibb.co/KcY5Xc7K/tw00018455.png" }, usdPrice: 1.3, priceHistory: [{ date: '3/13', usd: 1 }, { date: '3/20', usd: 1.5 }, { date: '3/27', usd: 1.3 }] },
+          { id: "m4f-rr-041", nameZh: "M4F 041/083 南瓜怪人ex RR", nameEn: "Gourgeist ex", set: { name: "[M4F] 忍者飛旋" }, number: "041/083", rarity: "RR", images: { large: "https://i.ibb.co/XRF1Gvx/tw00018461.png" }, usdPrice: 1.3, priceHistory: [{ date: '3/13', usd: 1 }, { date: '3/20', usd: 1.5 }, { date: '3/27', usd: 1.3 }] },
+          { id: "m4f-rr-062", nameZh: "M4F 062/083 勾帕路翁ex RR", nameEn: "Cobalion ex", set: { name: "[M4F] 忍者飛旋" }, number: "062/083", rarity: "RR", images: { large: "https://i.ibb.co/H9jdhqv/tw00018482.png" }, usdPrice: 1.3, priceHistory: [{ date: '3/13', usd: 1 }, { date: '3/20', usd: 1.5 }, { date: '3/27', usd: 1.3 }] },
+          { id: "m4f-rr-063", nameZh: "M4F 063/083 超級毒藻龍ex RR", nameEn: "Mega Dragalge ex", set: { name: "[M4F] 忍者飛旋" }, number: "063/083", rarity: "RR", images: { large: "https://i.ibb.co/QF1j9wnv/tw00018483.png" }, usdPrice: 1.3, priceHistory: [{ date: '3/13', usd: 1 }, { date: '3/20', usd: 1.5 }, { date: '3/27', usd: 1.3 }] },
+          { id: "m4f-rr-071", nameZh: "M4F 071/083 奇諾栗鼠ex RR", nameEn: "Cinccino ex", set: { name: "[M4F] 忍者飛旋" }, number: "071/083", rarity: "RR", images: { large: "https://i.ibb.co/KjrYNLZR/tw00018491.png" }, usdPrice: 4.5, priceHistory: [{ date: '3/13', usd: 4 }, { date: '3/20', usd: 5 }, { date: '3/27', usd: 4.5 }] },
         ];
 
         setCards([...m4fCards, ...formatted]);
@@ -351,7 +353,7 @@ export default function Home() {
                             <button onClick={(e) => { e.stopPropagation(); toggleFavorite(card.id); }} className="absolute top-3 right-3 z-10 text-2xl">
                               {isFavorite ? '❤️' : '♡'}
                             </button>
-                            <div className="h-44 bg-zinc-950 flex items-center justify-center p-3 overflow-hidden relative">
+                            <div className="h-40 bg-zinc-950 flex items-center justify-center p-3 overflow-hidden relative">
   <Image
     src={card.images.large}
     alt={card.nameZh}
@@ -395,7 +397,7 @@ export default function Home() {
                 </div>
                 <button onClick={closeDetail} className="text-4xl text-zinc-500 hover:text-white">×</button>
               </div>
-              <div className="relative h-[420px] bg-zinc-950 rounded-2xl mb-8 overflow-hidden">
+              <div className="relative h-[340px] bg-zinc-950 rounded-2xl mb-8 overflow-hidden">
                 <Image src={selectedCard.images.large} alt={selectedCard.nameZh} fill sizes="(max-width: 768px) 90vw, 400px" className="object-contain" onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x560/1f2937/ffffff?text=無圖片'; }} />
               </div>
               <div className="mb-8">
@@ -405,17 +407,23 @@ export default function Home() {
               </div>
               <div>
                 <h3 className="font-semibold mb-4">近期價格走勢 (USD)</h3>
-                <div className="h-72 bg-zinc-950 rounded-2xl p-6" style={{ minHeight: '300px', width: '100%' }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={selectedCard.priceHistory}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-                      <XAxis dataKey="date" stroke="#52525b" />
-                      <YAxis stroke="#52525b" />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="usd" stroke="#34d399" strokeWidth={3} dot={{ fill: '#34d399', r: 5 }} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
+                              <div className="h-72 bg-zinc-950 rounded-2xl p-6" style={{ minHeight: '300px', minWidth: '100%' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={selectedCard.priceHistory}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                    <XAxis dataKey="date" stroke="#52525b" />
+                    <YAxis stroke="#52525b" />
+                    <Tooltip />
+                    <Line 
+                      type="monotone" 
+                      dataKey="usd" 
+                      stroke="#34d399" 
+                      strokeWidth={3} 
+                      dot={{ fill: '#34d399', r: 5 }} 
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
               </div>
             </div>
           </div>
