@@ -1,5 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
@@ -8,11 +9,15 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'i.ibb.co',
+        hostname: 'via.placeholder.com',
       },
       {
         protocol: 'https',
-        hostname: 'via.placeholder.com',
+        hostname: 'picsum.photos',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ibb.co',
       },
     ],
   },
