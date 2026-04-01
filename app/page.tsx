@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
+
 interface PokemonCard {
   id: string;
   nameZh: string;
@@ -14,6 +15,7 @@ interface PokemonCard {
   usdPrice: number;
   priceHistory: { date: string; usd: number }[];
 }
+
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCard, setSelectedCard] = useState<PokemonCard | null>(null);
@@ -24,13 +26,17 @@ export default function Home() {
   const [selectedSet, setSelectedSet] = useState<string>('全部');
   const [cards, setCards] = useState<PokemonCard[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSeries, setShowSeries] = useState(false);
+
   useEffect(() => {
     const saved = localStorage.getItem('pokemonFavorites');
     if (saved) setFavorites(JSON.parse(saved));
   }, []);
+
   useEffect(() => {
     localStorage.setItem('pokemonFavorites', JSON.stringify(favorites));
   }, [favorites]);
+
   useEffect(() => {
     const fetchExchangeRate = async () => {
       try {
@@ -42,12 +48,12 @@ export default function Home() {
     };
     fetchExchangeRate();
   }, []);
-  // ==================== 只載入 M4F 系列（移除 Base 及其他舊系列） ====================
+
+  // 只載入 M4F 系列
   useEffect(() => {
     const fetchCards = async () => {
       try {
         setLoading(true);
-        // M4F 忍者飛旋 全系列卡片（MUR + SAR + RR + AR + SR）
         const m4fCards: PokemonCard[] = [
           // MUR
           {
@@ -77,7 +83,7 @@ export default function Home() {
           { id: "m4f-rr-062", nameZh: "M4F 062/083 勾帕路翁ex RR", nameEn: "Cobalion ex", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "062/083", rarity: "RR", images: { large: "https://i.ibb.co/H9jdhqv/tw00018482.png" }, usdPrice: 1.3, priceHistory: [{ date: '3/13', usd: 1 }, { date: '3/20', usd: 1.5 }, { date: '3/27', usd: 1.3 }] },
           { id: "m4f-rr-063", nameZh: "M4F 063/083 超級毒藻龍ex RR", nameEn: "Mega Dragalge ex", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "063/083", rarity: "RR", images: { large: "https://i.ibb.co/QF1j9wnv/tw00018483.png" }, usdPrice: 1.3, priceHistory: [{ date: '3/13', usd: 1 }, { date: '3/20', usd: 1.5 }, { date: '3/27', usd: 1.3 }] },
           { id: "m4f-rr-071", nameZh: "M4F 071/083 奇諾栗鼠ex RR", nameEn: "Cinccino ex", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "071/083", rarity: "RR", images: { large: "https://i.ibb.co/KjrYNLZR/tw00018491.png" }, usdPrice: 4.5, priceHistory: [{ date: '3/13', usd: 4 }, { date: '3/20', usd: 5 }, { date: '3/27', usd: 4.5 }] },
-          // AR（12張）
+          // AR
           { id: "m4f-ar-084", nameZh: "M4F 084/083 哈力栗 AR", nameEn: "Chespin AR", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "084/083", rarity: "AR", images: { large: "https://i.ibb.co/HDhyVZSJ/5e392aa15bd54ef6aa94f39274d030b3-c1621fac-38ed-4077-a919-a8d2651b72bc.webp" }, usdPrice: 2.6, priceHistory: [{ date: '3/13', usd: 2.5 }, { date: '3/20', usd: 2.8 }, { date: '3/27', usd: 2.6 }] },
           { id: "m4f-ar-085", nameZh: "M4F 085/083 火狐狸 AR", nameEn: "Fennekin AR", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "085/083", rarity: "AR", images: { large: "https://i.ibb.co/q3By87mg/77dc172743c97478f1c3c28d2fb0d1cf-d27f9cc7-220c-427b-a162-2fb47d11cc16.webp" }, usdPrice: 2.6, priceHistory: [{ date: '3/13', usd: 2.5 }, { date: '3/20', usd: 2.8 }, { date: '3/27', usd: 2.6 }] },
           { id: "m4f-ar-086", nameZh: "M4F 086/083 呱呱泡蛙 AR", nameEn: "Froakie AR", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "086/083", rarity: "AR", images: { large: "https://i.ibb.co/sp2ngjnd/5a2cc6a77da7c1a05a65a3529721a4df-e8062ae1-5865-484c-8f54-c2f6d44bc758.webp" }, usdPrice: 5.1, priceHistory: [{ date: '3/13', usd: 4.5 }, { date: '3/20', usd: 5.5 }, { date: '3/27', usd: 5.1 }] },
@@ -91,7 +97,7 @@ export default function Home() {
           { id: "m4f-ar-094", nameZh: "M4F 094/083 肯泰羅 AR", nameEn: "Tauros AR", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "094/083", rarity: "AR", images: { large: "https://i.ibb.co/Q3gSzWVP/8119c29333091b4e22aa81894f14d9b5-c8451a9e-ff4c-473d-9814-4e4007ef5b23.webp" }, usdPrice: 1.9, priceHistory: [{ date: '3/13', usd: 1.8 }, { date: '3/20', usd: 2 }, { date: '3/27', usd: 1.9 }] },
           { id: "m4f-ar-095", nameZh: "M4F 095/083 步哨鼠 AR", nameEn: "Sentret AR", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "095/083", rarity: "AR", images: { large: "https://i.ibb.co/nMVbkvbw/e0528a9eba4f1844f9c251842f1cc739-be901533-6e50-4b2f-8aa6-939a0148b1f3.webp" }, usdPrice: 1.9, priceHistory: [{ date: '3/13', usd: 1.8 }, { date: '3/20', usd: 2 }, { date: '3/27', usd: 1.9 }] },
         ];
-        setCards(m4fCards); // 只顯示 M4F 系列
+        setCards(m4fCards);
       } catch (err) {
         console.error(err);
         setCards([]);
@@ -101,13 +107,17 @@ export default function Home() {
     };
     fetchCards();
   }, []);
+
   const allSets = useMemo(() => ['全部', ...Array.from(new Set(cards.map(c => c.set.name))).sort().reverse()], [cards]);
+
   const displayedCards = useMemo(() => {
     let result = [...cards];
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase().trim();
       result = result.filter(card =>
-        card.nameZh.toLowerCase().includes(term) || card.nameEn.toLowerCase().includes(term) || card.set.name.toLowerCase().includes(term)
+        card.nameZh.toLowerCase().includes(term) || 
+        card.nameEn.toLowerCase().includes(term) || 
+        card.set.name.toLowerCase().includes(term)
       );
     }
     if (selectedSet !== '全部') {
@@ -120,6 +130,7 @@ export default function Home() {
     }
     return result;
   }, [cards, searchTerm, selectedSet, sortOption, showFavorites, favorites]);
+
   const groupedCards = useMemo(() => {
     const groups: { [set: string]: { [rarity: string]: PokemonCard[] } } = {};
     displayedCards.forEach(card => {
@@ -130,6 +141,7 @@ export default function Home() {
     });
     return groups;
   }, [displayedCards]);
+
   const toggleFavorite = (cardId: string) => {
     if (favorites.includes(cardId)) {
       setFavorites(favorites.filter(id => id !== cardId));
@@ -137,21 +149,19 @@ export default function Home() {
       setFavorites([...favorites, cardId]);
     }
   };
+
   const calculateHKD = (usd: number) => Math.round(usd * exchangeRate);
   const openDetail = (card: PokemonCard) => setSelectedCard(card);
   const closeDetail = () => setSelectedCard(null);
-  const goToHome = () => {
-    setSelectedSet('全部');
-    setShowFavorites(false);
-    setSearchTerm('');
-  };
+
   if (loading) {
     return <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-2xl text-white">正在載入真實卡片資料...</div>;
   }
+
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex">
-      {/* 左側系列欄 - 手機也盡量顯示 */}
-      <div className="w-64 bg-zinc-900 border-r border-zinc-800 p-6 block md:block overflow-y-auto">
+    <div className="min-h-screen bg-zinc-950 text-white">
+      {/* 左側系列欄 */}
+      <div className={`fixed md:relative md:w-64 bg-zinc-900 border-r border-zinc-800 p-6 h-full overflow-y-auto z-50 transition-all duration-300 ${showSeries ? 'left-0' : '-left-64 md:left-0'} w-64`}>
         <h3 className="text-lg font-semibold mb-6 text-emerald-400">選擇系列</h3>
         <div className="space-y-1">
           {allSets.map((setName) => (
@@ -167,41 +177,77 @@ export default function Home() {
           ))}
         </div>
       </div>
-      <div className="flex-1">
+
+      <div className="flex-1 md:ml-64">
         <header className="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-50">
-          <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="text-3xl">⚡</div>
               <div>
-                <h1 className="text-2xl font-bold">卡價通</h1>
-                <p className="text-zinc-400 text-xs">香港 Pokémon 卡片價格參考</p>
+                <h1 className="text-2xl font-bold tracking-tight">卡價通</h1>
+                <p className="text-zinc-400 text-xs -mt-0.5">香港 Pokémon 卡片價格參考</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  setSelectedSet('[M4F] 忍者飛旋 中文版');
+                  setShowFavorites(false);
+                  setSearchTerm('');
+                }}
+                className="text-emerald-400 hover:text-emerald-300 text-sm font-medium px-3 py-1"
+              >
+                首頁
+              </button>
+
               <button 
-  onClick={() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setSelectedSet('[M4F] 忍者飛旋 中文版');
-    setShowFavorites(false);
-    setSearchTerm('');
-  }} 
-  className="text-emerald-400 hover:text-emerald-300 text-sm font-medium"
->
-  首頁
-</button>
-              <button onClick={() => setShowFavorites(!showFavorites)} className={`px-4 py-2 rounded-2xl text-sm font-medium transition-all ${showFavorites ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'}`}>
+                onClick={() => setShowSeries(!showSeries)}
+                className="md:hidden px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-2xl text-sm font-medium"
+              >
+                選擇系列
+              </button>
+
+              <button 
+                onClick={() => setShowFavorites(!showFavorites)} 
+                className={`px-4 py-2 rounded-2xl text-sm font-medium transition-all ${showFavorites ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'}`}
+              >
                 ❤️ 我的收藏 ({favorites.length})
               </button>
             </div>
           </div>
         </header>
+
         <div className="max-w-6xl mx-auto px-4 py-8">
           {/* 手機版系列選擇 */}
           <div className="md:hidden mb-8">
-            <select value={selectedSet} onChange={(e) => setSelectedSet(e.target.value)} className="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-3.5 text-base">
-              {allSets.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
+            <button
+              onClick={() => setShowSeries(!showSeries)}
+              className="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-3.5 text-base flex justify-between items-center"
+            >
+              <span>{selectedSet}</span>
+              <span className="text-xl">▼</span>
+            </button>
+
+            {showSeries && (
+              <div className="mt-2 bg-zinc-900 border border-zinc-700 rounded-2xl overflow-hidden">
+                {allSets.map((setName) => (
+                  <button
+                    key={setName}
+                    onClick={() => {
+                      setSelectedSet(setName);
+                      setShowSeries(false);
+                    }}
+                    className={`w-full text-left px-5 py-3.5 hover:bg-zinc-800 ${selectedSet === setName ? 'text-emerald-400 font-medium' : ''}`}
+                  >
+                    {setName}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
+
           {!showFavorites && (
             <div className="mb-10">
               <div className="relative mb-6">
@@ -215,13 +261,18 @@ export default function Home() {
               </div>
               <div className="flex flex-wrap gap-2">
                 {['default', 'price-low', 'price-high'].map(opt => (
-                  <button key={opt} onClick={() => setSortOption(opt as any)} className={`px-5 py-2 rounded-full text-sm ${sortOption === opt ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'}`}>
+                  <button
+                    key={opt}
+                    onClick={() => setSortOption(opt as any)}
+                    className={`px-5 py-2 rounded-full text-sm ${sortOption === opt ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'}`}
+                  >
                     {opt === 'default' ? '預設' : opt === 'price-low' ? '低→高' : '高→低'}
                   </button>
                 ))}
               </div>
             </div>
           )}
+
           <div className="space-y-16">
             {Object.entries(groupedCards).map(([setName, rarityGroups]) => (
               <div key={setName}>
@@ -231,7 +282,7 @@ export default function Home() {
                     <h3 className="text-lg font-semibold mb-6 text-white flex items-center gap-3">
                       {rarity} <span className="text-zinc-500 text-sm">({cardsInGroup.length})</span>
                     </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"> {/* 手機版卡片更小 */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                       {cardsInGroup.map(card => {
                         const hkdPrice = calculateHKD(card.usdPrice);
                         const isFavorite = favorites.includes(card.id);
@@ -241,21 +292,24 @@ export default function Home() {
                             className="bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 group relative cursor-pointer transition-all hover:-translate-y-1 hover:shadow-2xl hover:border-emerald-500/60"
                             onClick={() => openDetail(card)}
                           >
-                            <button onClick={(e) => { e.stopPropagation(); toggleFavorite(card.id); }} className="absolute top-3 right-3 z-10 text-2xl">
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); toggleFavorite(card.id); }} 
+                              className="absolute top-3 right-3 z-10 text-2xl"
+                            >
                               {isFavorite ? '❤️' : '♡'}
                             </button>
                             <div className="h-40 bg-zinc-950 flex items-center justify-center p-3 overflow-hidden relative">
-  <Image
-    src={card.images.large}
-    alt={card.nameZh}
-    fill
-    sizes="(max-width: 768px) 45vw, 180px"
-    className="object-contain transition-transform duration-300 group-hover:scale-110"
-    onError={(e) => {
-      (e.target as HTMLImageElement).src = 'https://picsum.photos/id/1015/400/560';
-    }}
-  />
-</div>
+                              <Image
+                                src={card.images.large}
+                                alt={card.nameZh}
+                                fill
+                                sizes="(max-width: 768px) 45vw, 180px"
+                                className="object-contain transition-transform duration-300 group-hover:scale-110"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src = 'https://picsum.photos/id/1015/400/560';
+                                }}
+                              />
+                            </div>
                             <div className="p-4 pt-6">
                               <div className="font-medium text-sm leading-tight mb-3 line-clamp-2 min-h-[2.8em]">{card.nameZh}</div>
                               <div className="text-xs text-zinc-400 mb-3">No.{card.number}</div>
@@ -274,51 +328,77 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </div>
-      {/* 詳細彈窗 */}
-      {selectedCard && (
-        <div className="fixed inset-0 bg-black/95 flex items-center justify-center z-[60] p-4" onClick={closeDetail}>
-          <div className="bg-zinc-900 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-auto border border-zinc-700" onClick={e => e.stopPropagation()}>
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h2 className="text-3xl font-bold">{selectedCard.nameZh}</h2>
-                  <p className="text-zinc-400">{selectedCard.nameEn}</p>
+
+        {/* 詳細彈窗 */}
+        {selectedCard && (
+          <div
+            className="fixed inset-0 bg-black/95 flex items-center justify-center z-[60] p-4"
+            onClick={closeDetail}
+          >
+            <div
+              className="bg-zinc-900 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-auto border border-zinc-700"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <h2 className="text-3xl font-bold">{selectedCard.nameZh}</h2>
+                    <p className="text-zinc-400">{selectedCard.nameEn}</p>
+                  </div>
+                  <button
+                    onClick={closeDetail}
+                    className="text-4xl text-zinc-500 hover:text-white"
+                  >
+                    ×
+                  </button>
                 </div>
-                <button onClick={closeDetail} className="text-4xl text-zinc-500 hover:text-white">×</button>
-              </div>
-              <div className="relative h-[340px] bg-zinc-950 rounded-2xl mb-8 overflow-hidden">
-                <Image src={selectedCard.images.large} alt={selectedCard.nameZh} fill sizes="(max-width: 768px) 90vw, 400px" className="object-contain" onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x560/1f2937/ffffff?text=無圖片'; }} />
-              </div>
-              <div className="mb-8">
-                <div className="text-emerald-400 text-sm">TCGPlayer 市價</div>
-                <div className="text-5xl font-bold text-emerald-400">${selectedCard.usdPrice}</div>
-                <div className="text-4xl font-bold text-white mt-2">HK${calculateHKD(selectedCard.usdPrice)}</div>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-4">近期價格走勢 (USD)</h3>
-                              <div className="h-72 bg-zinc-950 rounded-2xl p-6" style={{ minHeight: '300px', minWidth: '100%' }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={selectedCard.priceHistory}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-                    <XAxis dataKey="date" stroke="#52525b" />
-                    <YAxis stroke="#52525b" />
-                    <Tooltip />
-                    <Line
-                      type="monotone"
-                      dataKey="usd"
-                      stroke="#34d399"
-                      strokeWidth={3}
-                      dot={{ fill: '#34d399', r: 5 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+
+                <div className="relative h-[340px] bg-zinc-950 rounded-2xl mb-8 overflow-hidden">
+                  <Image
+                    src={selectedCard.images.large}
+                    alt={selectedCard.nameZh}
+                    fill
+                    sizes="(max-width: 768px) 90vw, 400px"
+                    className="object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x560/1f2937/ffffff?text=無圖片';
+                    }}
+                  />
+                </div>
+
+                <div className="mb-8">
+                  <div className="text-emerald-400 text-sm">TCGPlayer 市價</div>
+                  <div className="text-5xl font-bold text-emerald-400">${selectedCard.usdPrice}</div>
+                  <div className="text-4xl font-bold text-white mt-2">
+                    HK${calculateHKD(selectedCard.usdPrice)}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold mb-4">近期價格走勢 (USD)</h3>
+                  <div className="h-72 bg-zinc-950 rounded-2xl p-6" style={{ minHeight: '300px', minWidth: '100%' }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={selectedCard.priceHistory}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                        <XAxis dataKey="date" stroke="#52525b" />
+                        <YAxis stroke="#52525b" />
+                        <Tooltip />
+                        <Line
+                          type="monotone"
+                          dataKey="usd"
+                          stroke="#34d399"
+                          strokeWidth={3}
+                          dot={{ fill: '#34d399', r: 5 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
