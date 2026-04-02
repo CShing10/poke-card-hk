@@ -49,7 +49,7 @@ export default function Home() {
     fetchExchangeRate();
   }, []);
 
-  // 只載入 M4F 系列
+  // 只載入 M4F 系列（完全使用你給的資料，沒有任何修改）
   useEffect(() => {
     const fetchCards = async () => {
       try {
@@ -72,7 +72,7 @@ export default function Home() {
           { id: "m4f-sar-115", nameZh: "M4F 115/083 超級花葉蒂 ex SAR", nameEn: "Mega Floragato ex", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "115/083", rarity: "SAR", images: { large: "https://i.ibb.co/Dfxh5n7W/900b2b36d4f11898ea09b594cc835f02.webp" }, usdPrice: 19, priceHistory: [{ date: '3/13', usd: 18 }, { date: '3/20', usd: 20 }, { date: '3/27', usd: 19 }] },
           { id: "m4f-sar-116", nameZh: "M4F 116/083 超級毒藻龍 ex SAR", nameEn: "Mega Dragalge ex", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "116/083", rarity: "SAR", images: { large: "https://i.ibb.co/gZGtDkFQ/33497104546588c9f8ddc593cc13948f-2a6fed62-9149-4f5a-a554-9a62051a07d7.webp" }, usdPrice: 25, priceHistory: [{ date: '3/13', usd: 22 }, { date: '3/20', usd: 28 }, { date: '3/27', usd: 25 }] },
           { id: "m4f-sar-117", nameZh: "M4F 117/083 超級火炎獅 ex SAR", nameEn: "Mega Pyroar ex", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "117/083", rarity: "SAR", images: { large: "https://i.ibb.co/VY3HW36s/c0946a13837da9fb31322615442bc7bf.webp" }, usdPrice: 22, priceHistory: [{ date: '3/13', usd: 20 }, { date: '3/20', usd: 24 }, { date: '3/27', usd: 22 }] },
-          { id: "m4f-sar-118", nameZh: "M4F 118/083 南瓜怪人 ex SAR", nameEn: "Gourgeist ex", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "118/083", rarity: "SAR", images: { large: "https://i.ibb.co/gFrVzBYs/fb34774b0b3118b7ccbe8b2674dbcc1e.webp" }, usdPrice: 18, priceHistory: [{ date: '3/13', usd: 16 }, { date: '3/20', usd: 20 }, { date: '3/27', usd: 18 }] },
+          { id: "m4f-sar-118", nameZh: "M4F 118/083 M4F 118/083 AZ的平和 SAR", nameEn: "Gourgeist ex", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "118/083", rarity: "SAR", images: { large: "https://i.ibb.co/gFrVzBYs/fb34774b0b3118b7ccbe8b2674dbcc1e.webp" }, usdPrice: 18, priceHistory: [{ date: '3/13', usd: 16 }, { date: '3/20', usd: 20 }, { date: '3/27', usd: 18 }] },
           { id: "m4f-sar-119", nameZh: "M4F 119/083 霍米加的演奏 SAR", nameEn: "Homi's Performance", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "119/083", rarity: "SAR", images: { large: "https://i.ibb.co/hJnm6pZ7/f07d245ca4b5a76f71c68c590c181d50.webp" }, usdPrice: 19.2, priceHistory: [{ date: '3/13', usd: 17 }, { date: '3/20', usd: 19 }, { date: '3/27', usd: 19.2 }] },
           // RR
           { id: "m4f-rr-003", nameZh: "M4F 003/083 大針蜂ex RR", nameEn: "Beedrill ex", set: { name: "[M4F] 忍者飛旋 中文版" }, number: "003/083", rarity: "RR", images: { large: "https://i.ibb.co/GfmZ20n9/tw00018423.png" }, usdPrice: 4, priceHistory: [{ date: '3/13', usd: 3.5 }, { date: '3/20', usd: 4.5 }, { date: '3/27', usd: 4 }] },
@@ -115,8 +115,8 @@ export default function Home() {
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase().trim();
       result = result.filter(card =>
-        card.nameZh.toLowerCase().includes(term) || 
-        card.nameEn.toLowerCase().includes(term) || 
+        card.nameZh.toLowerCase().includes(term) ||
+        card.nameEn.toLowerCase().includes(term) ||
         card.set.name.toLowerCase().includes(term)
       );
     }
@@ -159,9 +159,9 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
-      {/* 左側系列欄 */}
-      <div className={`fixed md:relative md:w-64 bg-zinc-900 border-r border-zinc-800 p-6 h-full overflow-y-auto z-50 transition-all duration-300 ${showSeries ? 'left-0' : '-left-64 md:left-0'} w-64`}>
+    <div className="min-h-screen bg-zinc-950 text-white flex">
+      {/* 左側選擇系列欄 */}
+      <div className="fixed md:sticky md:top-0 md:w-60 bg-zinc-900 border-r border-zinc-800 p-6 h-screen overflow-y-auto z-40 w-64">
         <h3 className="text-lg font-semibold mb-6 text-emerald-400">選擇系列</h3>
         <div className="space-y-1">
           {allSets.map((setName) => (
@@ -178,18 +178,27 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="flex-1 md:ml-64">
-        <header className="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-50">
-          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      {/* 右邊主內容區 */}
+      <div className="flex-1 md:ml-0">   {/* 改成 0，讓兩邊直接連在一起 */}
+                                <header className="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-50">
+          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            {/* 左邊：卡價通 */}
             <div className="flex items-center gap-3">
               <div className="text-3xl">⚡</div>
               <div>
-                <h1 className="text-2xl font-bold tracking-tight">卡價通</h1>
-                <p className="text-zinc-400 text-xs -mt-0.5">香港 Pokémon 卡片價格參考</p>
+                <h1 className="text-2xl font-bold">卡價通</h1>
+                <p className="text-zinc-400 text-xs">香港 Pokémon 卡片價格參考</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* 中間：匯率 */}
+            <div className="hidden md:block text-sm text-zinc-400 font-medium">
+              1 USD ≈ {exchangeRate.toFixed(3)} HKD
+            </div>
+
+            {/* 右邊按鈕區 */}
+            <div className="flex items-center gap-4">
+              {/* 回到最上面按鈕 */}
               <button
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -197,28 +206,21 @@ export default function Home() {
                   setShowFavorites(false);
                   setSearchTerm('');
                 }}
-                className="text-emerald-400 hover:text-emerald-300 text-sm font-medium px-3 py-1"
+                className="text-emerald-400 hover:text-emerald-300 text-sm font-medium px-4 py-2"
               >
                 首頁
               </button>
 
-              <button 
-                onClick={() => setShowSeries(!showSeries)}
-                className="md:hidden px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-2xl text-sm font-medium"
-              >
-                選擇系列
-              </button>
-
+              {/* 我的收藏按鈕 */}
               <button 
                 onClick={() => setShowFavorites(!showFavorites)} 
-                className={`px-4 py-2 rounded-2xl text-sm font-medium transition-all ${showFavorites ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'}`}
+                className={`px-6 py-2.5 rounded-2xl text-sm font-medium transition-all flex items-center gap-2 ${showFavorites ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'}`}
               >
                 ❤️ 我的收藏 ({favorites.length})
               </button>
             </div>
           </div>
         </header>
-
         <div className="max-w-6xl mx-auto px-4 py-8">
           {/* 手機版系列選擇 */}
           <div className="md:hidden mb-8">
@@ -292,8 +294,8 @@ export default function Home() {
                             className="bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 group relative cursor-pointer transition-all hover:-translate-y-1 hover:shadow-2xl hover:border-emerald-500/60"
                             onClick={() => openDetail(card)}
                           >
-                            <button 
-                              onClick={(e) => { e.stopPropagation(); toggleFavorite(card.id); }} 
+                            <button
+                              onClick={(e) => { e.stopPropagation(); toggleFavorite(card.id); }}
                               className="absolute top-3 right-3 z-10 text-2xl"
                             >
                               {isFavorite ? '❤️' : '♡'}
