@@ -142,7 +142,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      {/* Header - 強制只優化手機版，不改你喜歡的那一行 */}
+                  {/* Header - 不改你喜歡的 div 行，只優化手機版 */}
       <header className="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-50">
         <div className="mx-auto pl-6 pr-10 py-4 flex items-center justify-between">
           
@@ -150,8 +150,8 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <div className="text-3xl md:text-3xl">⚡</div>
             <div>
-              <h1 className="text-[22px] md:text-2xl font-bold">卡價通</h1>
-              <p className="text-zinc-400 text-[10px] md:text-xs -mt-0.5">香港 Pokémon 卡片價格參考</p>
+              <h1 className="text-2xl md:text-2xl font-bold">卡價通</h1>
+              <p className="text-zinc-400 text-xs md:text-xs -mt-0.5">香港 Pokémon 卡片價格參考</p>
             </div>
           </div>
 
