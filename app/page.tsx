@@ -142,20 +142,21 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-            {/* Header - 按照你最新截圖調整 */}
+                  {/* Header - 不改你喜歡的 div 行，只優化手機版 */}
       <header className="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-50">
         <div className="mx-auto pl-6 pr-10 py-4 flex items-center justify-between">
+          
           {/* 左邊：卡價通 */}
           <div className="flex items-center gap-3">
-            <div className="text-3xl">⚡</div>
+            <div className="text-3xl md:text-3xl">⚡</div>
             <div>
-              <h1 className="text-2xl font-bold">卡價通</h1>
-              <p className="text-zinc-400 text-xs -mt-0.5">香港 Pokémon 卡片價格參考</p>
+              <h1 className="text-2xl md:text-2xl font-bold">卡價通</h1>
+              <p className="text-zinc-400 text-xs md:text-xs -mt-0.5">香港 Pokémon 卡片價格參考</p>
             </div>
           </div>
 
           {/* 右邊：首頁 + 我的收藏 */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
             <button
               onClick={() => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -163,14 +164,14 @@ export default function Home() {
                 setShowFavorites(false);
                 setSearchTerm('');
               }}
-              className="text-emerald-400 hover:text-emerald-300 px-5 py-2 text-sm font-medium"
+              className="text-emerald-400 hover:text-emerald-300 px-4 py-1.5 text-sm md:text-sm font-medium"
             >
               首頁
             </button>
 
             <button
               onClick={() => setShowFavorites(!showFavorites)}
-              className={`px-6 py-2.5 rounded-2xl text-sm font-medium transition-all flex items-center gap-2 ${showFavorites ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'}`}
+              className={`px-5 md:px-6 py-2 md:py-2.5 rounded-2xl text-sm md:text-sm font-medium transition-all flex items-center gap-1.5 ${showFavorites ? 'bg-emerald-600 text-white' : 'bg-zinc-800 hover:bg-zinc-700'}`}
             >
               ❤️ 我的收藏 ({favorites.length})
             </button>
